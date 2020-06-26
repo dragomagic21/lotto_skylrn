@@ -6,14 +6,16 @@ from math import sqrt
 from sklearn.preprocessing import StandardScaler, MinMaxScaler #Нормировщики
 
 # Get number in lottery
-data = pd.read_csv('D:\\temp\\loto_stat.csv', encoding='cp1251', header=0, index_col=0)
+data = pd.read_csv('D:\\temp\\loto_stat.csv', delimiter=';', encoding='cp1251', header=0, index_col=0)
 print(range(len(data)))
 print('############')
 
+COUNT = 1000
+
 data['SUM'] = data.sum(axis=1)
-#print('DATA WITH SUM')
-#print(data)
-#print('############ /n')
+print('DATA WITH SUM')
+print(data)
+print('############ /n')
 data['lottery_num'] = data.index
 
 # Append SUM of numbers in each lottery
@@ -47,11 +49,20 @@ x = data_for_model
 y = res.values.ravel()
 y = y.astype('int')
 
-x_train = x[1:98]
-x_test = x[99:]
+x_train = x[1:COUNT-2]
+x_test = x[COUNT-1:]
+y_train = y[1:COUNT-2]
+y_test = y[COUNT-1:]
 
-y_train = y[1:98]
-y_test = y[98:]
+#print('X TRAIN')
+#print(x_train)
+#print('X TEST')
+#print(x_test)
+
+#print('Y TRAIN')
+#print(y_train)
+#print('Y TEST')
+#print(y_test)
 
 d = pd.DataFrame(index=x_test.index) # Set for check model
 d['FACT'] = res[1:] # Real values
