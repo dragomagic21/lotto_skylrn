@@ -1,5 +1,5 @@
 import pandas as pd  # Пандас
-import matplotlib.pyplot as plt  # Отрисовка графиков
+#import matplotlib.pyplot as plt  # Отрисовка графиков
 import numpy as np  # Numpy
 import itertools
 
@@ -19,7 +19,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 COUNT = 200
 
 # Get number in lottery
-data = pd.read_csv('/home/vadim/python_loto/loto_stat.csv', delimiter=';', encoding='cp1251', header=0, index_col=0)
+data = pd.read_csv('loto_stat.csv', delimiter=';', encoding='cp1251', header=0, index_col=0)
 data = data[-COUNT:]
 print(range(len(data)))
 print('############')
@@ -44,8 +44,8 @@ res = res[1:]
 # print(res)
 # print('#################')
 
-plt.plot(data['SUM'])
-plt.savefig('demo.png', bbox_inches='tight')
+#plt.plot(data['SUM'])
+#plt.savefig('demo.png', bbox_inches='tight')
 
 # Make new Data_Model - get indexing from previous
 data_for_model = pd.DataFrame(index=data.index)
@@ -216,9 +216,9 @@ print('TAIL')
 print(df_filter.tail())
 
 # Filter one by one nubmers -- 1 2 3 4 ? ? /
-df_filter = df_filter[ (df_filter['N1']+1 != df_filter['N2'] & df_filter['N2']+1 != df_filter['N3'] & df_filter['N3']+1 != df_filter['N4']) ]
-#df_filter = df_filter[ (df_filter['N2']+1 != df_filter['N3']) &  (df_filter['N3']+1 != df_filter['N4']) &  (df_filter['N4']+1 != df_filter['N5']) ]
-#df_filter = df_filter[ (df_filter['N3']+1 != df_filter['N4']) &  (df_filter['N4']+1 != df_filter['N5']) &  (df_filter['N5']+1 != df_filter['N6']) ]
+df_filter = df_filter[ (df_filter['N1'] != (df_filter['N2']-1)) | (df_filter['N1'] != (df_filter['N3']-2)) | (df_filter['N1'] != (df_filter['N3']-3)) ]
+df_filter = df_filter[ (df_filter['N2'] != (df_filter['N3']-1)) | (df_filter['N2'] != (df_filter['N4']-2)) | (df_filter['N2'] != (df_filter['N5']-3)) ]
+df_filter = df_filter[ (df_filter['N3'] != (df_filter['N4']-1)) | (df_filter['N3'] != (df_filter['N5']-2)) | (df_filter['N3'] != (df_filter['N6']-3)) ]
 
 
 print('AFTER CLEAR -- COUNT OF VARIATIONS: ', len(df_filter))
@@ -226,3 +226,22 @@ print('### HEAD ###')
 print(df_filter.head())
 print('TAIL')
 print(df_filter.tail())
+
+# Create table of chance for each number
+chance_36 = pd.DataFrame()
+for i in range(36):
+    chance_36[i+1] = 0
+
+num = 0
+# TODO: make chance for each nubmer from end
+for chance in reversed(data_for_model.index):
+    num += 1
+#    for number in range(36):
+#        if( ((number+1) in chance['N1'])):
+#            chance_36[number+1] -= num/COUNT
+#        else:
+#            chance_36[number + 1] += num / COUNT
+
+print(chance_36)
+
+
