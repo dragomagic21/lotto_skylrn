@@ -228,20 +228,23 @@ print('TAIL')
 print(df_filter.tail())
 
 # Create table of chance for each number
-chance_36 = pd.DataFrame()
-for i in range(36):
-    chance_36[i+1] = 0
+chance_36 = [1,2,3,4,5,6,7,8,9,10
+             ,11,12,13,14,15,16,17,18,19,20
+             ,21,22,23,24,25,26,27,28,29,30
+             ,31,32,33,34,35,36]
 
-num = 0
-# TODO: make chance for each nubmer from end
-for chance in reversed(data_for_model.index):
-    num += 1
-#    for number in range(36):
-#        if( ((number+1) in chance['N1'])):
-#            chance_36[number+1] -= num/COUNT
-#        else:
-#            chance_36[number + 1] += num / COUNT
+num = COUNT
+# chance for namber, based on "cold numbers" strategy
+for index, row in (data.iterrows()):
+    cur_row = [row['N1'], row['N2'], row['N3'], row['N4'], row['N5'], row['N6']]
+    for number in range(36):
+        if( (number+1) in cur_row):
+            chance_36[number] -= num / COUNT
+        else:
+            chance_36[number] += num / COUNT
+    num -= 1
 
 print(chance_36)
 
+# TODO: set chance for chossen tickets
 
