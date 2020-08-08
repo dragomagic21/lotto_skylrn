@@ -216,9 +216,14 @@ print('TAIL')
 print(df_filter.tail())
 
 # Filter one by one nubmers -- 1 2 3 4 ? ? /
-df_filter = df_filter[ (df_filter['N1'] != (df_filter['N2']-1)) | (df_filter['N1'] != (df_filter['N3']-2)) | (df_filter['N1'] != (df_filter['N3']-3)) ]
-df_filter = df_filter[ (df_filter['N2'] != (df_filter['N3']-1)) | (df_filter['N2'] != (df_filter['N4']-2)) | (df_filter['N2'] != (df_filter['N5']-3)) ]
-df_filter = df_filter[ (df_filter['N3'] != (df_filter['N4']-1)) | (df_filter['N3'] != (df_filter['N5']-2)) | (df_filter['N3'] != (df_filter['N6']-3)) ]
+#df_filter = df_filter[ (df_filter['N1'] != (df_filter['N2']-1)) | (df_filter['N1'] != (df_filter['N3']-2)) | (df_filter['N1'] != (df_filter['N3']-3)) ]
+#df_filter = df_filter[ (df_filter['N2'] != (df_filter['N3']-1)) | (df_filter['N2'] != (df_filter['N4']-2)) | (df_filter['N2'] != (df_filter['N5']-3)) ]
+#df_filter = df_filter[ (df_filter['N3'] != (df_filter['N4']-1)) | (df_filter['N3'] != (df_filter['N5']-2)) | (df_filter['N3'] != (df_filter['N6']-3)) ]
+# Filter one by one numbers
+df_filter = df_filter[ (df_filter['N1'] != (df_filter['N2']-1)) & (df_filter['N1'] != (df_filter['N3']-2)) & (df_filter['N1'] != (df_filter['N3']-3)) ]
+df_filter = df_filter[ (df_filter['N2'] != (df_filter['N3']-1)) & (df_filter['N2'] != (df_filter['N4']-2)) & (df_filter['N2'] != (df_filter['N5']-3)) ]
+df_filter = df_filter[ (df_filter['N3'] != (df_filter['N4']-1)) & (df_filter['N3'] != (df_filter['N5']-2)) & (df_filter['N3'] != (df_filter['N6']-3)) ]
+
 
 
 print('AFTER CLEAR -- COUNT OF VARIATIONS: ', len(df_filter))
@@ -246,5 +251,56 @@ for index, row in (data.iterrows()):
 
 print(chance_36)
 
-# TODO: set chance for chossen tickets
+# Нормируем вероятности к 100%
+max_chance = max(chance_36)
+print('max_chance: ', max_chance)
+
+for i in range(36):
+    chance_36[i] = round( chance_36[i]/max_chance * 100, 2)
+
+print('CHANCE AFTER NORMALIZE')
+print(chance_36)
+
+map_of_chance = {1: chance_36[0], 2: chance_36[1], 3: chance_36[2], 4: chance_36[3], 5: chance_36[4], 6: chance_36[5], 7: chance_36[6], 8: chance_36[7], 9: chance_36[8], 10: chance_36[9],
+                 11: chance_36[10], 12: chance_36[11], 13: chance_36[12], 14: chance_36[13], 15: chance_36[14], 16: chance_36[15], 17: chance_36[16], 18: chance_36[17], 19: chance_36[18], 20: chance_36[19],
+                 21: chance_36[20], 22: chance_36[21], 23: chance_36[22], 24: chance_36[23], 25: chance_36[24], 26: chance_36[25], 27: chance_36[26], 28: chance_36[27], 29: chance_36[28], 30: chance_36[29],
+                 31: chance_36[30], 32: chance_36[31], 33: chance_36[32], 34: chance_36[33], 35: chance_36[34], 36: chance_36[35]
+                 }
+
+df_filter['N1_chance'] = df_filter['N1'].map(map_of_chance)
+df_filter['N2_chance'] = df_filter['N2'].map(map_of_chance)
+df_filter['N3_chance'] = df_filter['N3'].map(map_of_chance)
+df_filter['N4_chance'] = df_filter['N4'].map(map_of_chance)
+df_filter['N5_chance'] = df_filter['N5'].map(map_of_chance)
+df_filter['N6_chance'] = df_filter['N6'].map(map_of_chance)
+
+df_filter['chance'] = df_filter['N1_chance'] + df_filter['N2_chance'] + df_filter['N3_chance'] + df_filter['N4_chance'] + df_filter['N5_chance']+ df_filter['N6_chance']
+print(df_filter.head())
+
+# Normalize chance
+max_chance = max(df_filter['chance'])
+
+df_filter['chance'] = df_filter['chance'] / max_chance * 100
+
+print('After normalize')
+print(df_filter.head())
+
+df_filter = df_filter.sort_values(by=['chance'], ascending=False)
+print('SORTERED')
+print(df_filter.head())
+
+print('TOP 5 BILETs')
+print(df_filter['N1'].iloc[0], ' ', df_filter['N2'].iloc[0], ' ', df_filter['N3'].iloc[0], ' ', df_filter['N4'].iloc[0], ' ', df_filter['N5'].iloc[0], ' ', df_filter['N6'].iloc[0], ' ')
+print(df_filter['N1'].iloc[1], ' ', df_filter['N2'].iloc[1], ' ', df_filter['N3'].iloc[1], ' ', df_filter['N4'].iloc[1], ' ', df_filter['N5'].iloc[1], ' ', df_filter['N6'].iloc[1], ' ')
+print(df_filter['N1'].iloc[2], ' ', df_filter['N2'].iloc[2], ' ', df_filter['N3'].iloc[2], ' ', df_filter['N4'].iloc[2], ' ', df_filter['N5'].iloc[2], ' ', df_filter['N6'].iloc[2], ' ')
+print(df_filter['N1'].iloc[3], ' ', df_filter['N2'].iloc[3], ' ', df_filter['N3'].iloc[3], ' ', df_filter['N4'].iloc[3], ' ', df_filter['N5'].iloc[3], ' ', df_filter['N6'].iloc[3], ' ')
+print(df_filter['N1'].iloc[4], ' ', df_filter['N2'].iloc[4], ' ', df_filter['N3'].iloc[4], ' ', df_filter['N4'].iloc[4], ' ', df_filter['N5'].iloc[4], ' ', df_filter['N6'].iloc[4], ' ')
+
+print('TILE 5 BILETs')
+print(df_filter['N1'].iloc[-1], ' ', df_filter['N2'].iloc[-1], ' ', df_filter['N3'].iloc[-1], ' ', df_filter['N4'].iloc[-1], ' ', df_filter['N5'].iloc[-1], ' ', df_filter['N6'].iloc[-1], ' ')
+print(df_filter['N1'].iloc[-2], ' ', df_filter['N2'].iloc[-2], ' ', df_filter['N3'].iloc[-2], ' ', df_filter['N4'].iloc[-2], ' ', df_filter['N5'].iloc[-2], ' ', df_filter['N6'].iloc[-2], ' ')
+print(df_filter['N1'].iloc[-3], ' ', df_filter['N2'].iloc[-3], ' ', df_filter['N3'].iloc[-3], ' ', df_filter['N4'].iloc[-3], ' ', df_filter['N5'].iloc[-3], ' ', df_filter['N6'].iloc[-3], ' ')
+print(df_filter['N1'].iloc[-4], ' ', df_filter['N2'].iloc[-4], ' ', df_filter['N3'].iloc[-4], ' ', df_filter['N4'].iloc[-4], ' ', df_filter['N5'].iloc[-4], ' ', df_filter['N6'].iloc[-4], ' ')
+print(df_filter['N1'].iloc[-5], ' ', df_filter['N2'].iloc[-5], ' ', df_filter['N3'].iloc[-5], ' ', df_filter['N4'].iloc[-5], ' ', df_filter['N5'].iloc[-5], ' ', df_filter['N6'].iloc[-5], ' ')
+
 
